@@ -1,0 +1,58 @@
+{
+  "project_name": "telemetry-future-warning-risk",
+  "random_state": 42,
+  "history_window_days": 7,
+  "prediction_horizon_days": 7,
+  "split_days": {
+    "train": [7, 14, 21, 28, 35],
+    "validation": [49, 56],
+    "test": [70, 77]
+  },
+  "features": [
+    "mean_load", "max_load", "std_load", "mean_latency", "max_latency",
+    "std_latency", "mean_error_rate", "max_error_rate", "error_rate_slope",
+    "error_count", "warning_count", "measurement_count", "days_since_error",
+    "days_since_measurement", "observed_days"
+  ],
+  "search_count": 16,
+  "xgboost_search_space": {
+    "n_estimators": [60, 120, 200],
+    "max_depth": [1, 2, 3, 5],
+    "learning_rate": [0.025, 0.06, 0.15],
+    "subsample": [0.65, 0.85, 1.0],
+    "colsample_bytree": [0.65, 0.85, 1.0],
+    "min_child_weight": [5, 20, 80],
+    "reg_alpha": [0.0, 1.0, 5.0],
+    "reg_lambda": [1.0, 10.0, 40.0]
+  },
+  "baseline_xgboost": {
+    "n_estimators": 120,
+    "max_depth": 3,
+    "learning_rate": 0.06,
+    "subsample": 0.85,
+    "colsample_bytree": 0.85,
+    "min_child_weight": 20,
+    "reg_alpha": 1.0,
+    "reg_lambda": 10.0
+  },
+  "logistic_regression": {
+    "max_iter": 1500,
+    "class_weight": "balanced"
+  },
+  "xgboost_runtime": {
+    "n_jobs": 4,
+    "tree_method": "hist"
+  },
+  "alert_policy": {
+    "max_alerts_per_1000": 20.0,
+    "desired_recall": 0.6,
+    "criterion": "Максимальная полнота при <=20 тревог на 1000; затем меньше FP, затем больший порог",
+    "status": "Гипотетическая ёмкость; при недостижении полноты — только теневой пилот"
+  },
+  "cooldown_days": 14,
+  "shap_sample_size": 1600,
+  "paths": {
+    "dataset": "dataset",
+    "output": "processed/telemetry_failure"
+  }
+}
